@@ -870,9 +870,46 @@ ${valor("descricao")}
 
   `;
 
-  const numero = 
+ <script>
+  const API_URL = "https://https://paulin-backend.onrender.com/api/gerar-site";
 
-  const link =
+  document.getElementById("gerarSite").addEventListener("click", async () => {
+    const pedido = document.getElementById("pedido").value.trim();
+    const resultado = document.getElementById("resultado");
+
+    if (!pedido) {
+      resultado.textContent = "Digite seu pedido primeiro.";
+      return;
+    }
+
+    resultado.textContent = "Gerando…";
+
+    try {
+      const resposta = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pedido })
+      });
+
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        throw new Error(dados.erro || "Erro ao gerar.");
+      }
+
+      const iframe = document.createElement("iframe");
+      iframe.title = "Prévia do site gerado";
+      iframe.style.cssText = "width:100%;height:600px;border:1px solid #ccc";
+      iframe.srcdoc = dados.html;
+      resultado.replaceChildren(iframe);
+    } catch (erro) {
+      resultado.textContent = "Falha: " + erro.message;
+    }
+  });
+</script>
+
+
+  
 
     
 
