@@ -810,7 +810,7 @@
 
           <button class="btn" type="submit">
 
-            📲 Enviar pedido pelo WhatsApp
+           gerar site🌍
 
           </button>
 
@@ -907,22 +907,61 @@ ${valor("descricao")}
     }
   });
 </script>
+<form id="pedido">
+  <textarea id="descricao" placeholder="Descreva sua loja e o site que deseja" required></textarea>
+  <button id="gerarSite" type="submit">Gerar meu site</button>
+</form>
+
+<div id="resultado"></div>
+
+<script>
+  const form = document.getElementById("pedido");
+  const resultado = document.getElementById("resultado");
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const botao = document.getElementById("gerarSite");
+    const pedido = document.getElementById("descricao").value.trim();
+
+    if (!pedido) {
+      resultado.textContent = "Preencha a descrição da loja.";
+      return;
+    }
+
+    botao.disabled = true;
+    resultado.textContent = "Gerando seu site…";
+
+    try {
+      const resposta = await fetch(
+        "https://SEU-SERVICO.onrender.com/api/gerar-site",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pedido })
+        }
+      );
+
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        throw new Error(dados.erro || `Erro HTTP ${resposta.status}`);
+      }
+
+      const iframe = document.createElement("iframe");
+      iframe.title = "Prévia do site gerado";
+      iframe.style.cssText = "width:100%;height:700px;border:1px solid #ccc";
+      iframe.srcdoc = dados.html;
+      resultado.replaceChildren(iframe);
+    } catch (erro) {
+      resultado.textContent = "Não foi possível gerar: " + erro.message;
+    } finally {
+      botao.disabled = false;
+    }
+  });
+</script>
 
 <button id="gerarSite" type="button">Gerar site</button>
-
-  
-
-    
-
-    numero +
-
-    "?text=" +
-
-    encodeURIComponent(mensagem);
-
-  window.open(link, "_blank");
-
-});
 
 </script>
 https://paulin-backend.onrender.com/
