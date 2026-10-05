@@ -144,5 +144,50 @@ async function copySite(){
   alert("Código copiado!");
 }
 </script>
+  const form = document.getElementById("pedido");
+  const descricao = document.getElementById("descricao");
+  const resultado = document.getElementById("resultado");
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const texto = descricao.value.trim();
+    if (!texto) {
+      resultado.textContent = "Descreva o site que você quer criar.";
+      return;
+    }
+
+    resultado.textContent = "Gerando seu site...";
+
+    try {
+      const resposta = await fetch(
+        "https://paulin-backend.onrender.com/api/gerar-site",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ descricao: texto }),
+        }
+      );
+
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        throw new Error(dados.erro || "Erro ao gerar o site.");
+      }
+
+      const iframe = document.createElement("iframe");
+      iframe.title = "Prévia do site gerado";
+      iframe.setAttribute("sandbox", "allow-scripts");
+      iframe.style.width = "100%";
+      iframe.style.height = "700px";
+      iframe.style.border = "1px solid #ccc";
+
+      resultado.replaceChildren(iframe);
+      iframe.srcdoc = dados.html;
+    } catch (erro) {
+      resultado.textContent = `Falha: ${erro.message}`;
+    }
+  });
+</script>
 </body>
 </html>
