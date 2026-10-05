@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA do Paulin — Crie seu site com IA</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#050914;color:#fff;min-height:100vh}
+header{padding:22px 7%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #17223a}
+.logo{font-size:25px;font-weight:800}.logo span{color:#168cff}
+.badge{font-size:12px;color:#7fc2ff;border:1px solid #174a7d;padding:8px 12px;border-radius:20px}
+.hero{padding:65px 7% 35px;text-align:center}
+h1{font-size:clamp(38px,7vw,72px);line-height:1.05;margin-bottom:18px}
+h1 span{color:#168cff}
+.hero p{max-width:680px;margin:auto;color:#aab6cc;font-size:18px;line-height:1.6}
+.card{width:min(900px,92%);margin:35px auto 70px;background:#0a1120;border:1px solid #1b2b49;border-radius:22px;padding:28px;box-shadow:0 20px 70px #0008}
+label{display:block;margin:18px 0 8px;font-weight:700}
+textarea,select,input{width:100%;background:#050a14;color:#fff;border:1px solid #263a5e;border-radius:12px;padding:14px;font-size:15px;outline:none}
+textarea{min-height:145px;resize:vertical}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+button{border:0;border-radius:12px;padding:16px 20px;font-weight:800;font-size:16px;cursor:pointer}
+.generate{width:100%;margin-top:22px;background:#168cff;color:#fff;box-shadow:0 10px 30px #168cff40}
+.generate:hover{background:#0875df}
+#status{display:none;margin-top:18px;padding:14px;border-radius:10px;background:#071b30;color:#8dcaff;text-align:center}
+.preview{display:none;margin-top:25px}
+.preview iframe{width:100%;height:500px;border:1px solid #263a5e;border-radius:14px;background:white}
+.actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.actions button{background:#16243c;color:white}
+footer{text-align:center;color:#71809a;padding:25px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.card{padding:20px}.hero{padding-top:45px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">IA do <span>Paulin</span></div>
+  <div class="badge">⚡ Sites com Inteligência Artificial</div>
+</header>
+
+<section class="hero">
+  <h1>Crie um site em <span>minutos.</span></h1>
+  <p>Descreva o site que você quer e deixe a IA do Paulin criar a estrutura para você.</p>
+</section>
+
+<main class="card">
+  <label for="business">Nome do negócio</label>
+  <input id="business" placeholder="Ex.: CL Boutique">
+
+  <div class="grid">
+    <div>
+      <label for="type">Tipo de site</label>
+      <select id="type">
+        <option>Loja virtual</option>
+        <option>Site empresarial</option>
+        <option>Landing page</option>
+        <option>Portfólio</option>
+        <option>Restaurante</option>
+        <option>Profissional autônomo</option>
+      </select>
+    </div>
+    <div>
+      <label for="style">Estilo</label>
+      <select id="style">
+        <option>Moderno e profissional</option>
+        <option>Luxuoso</option>
+        <option>Minimalista</option>
+        <option>Jovem e chamativo</option>
+        <option>Elegante</option>
+      </select>
+    </div>
+  </div>
+
+  <label for="description">Descreva o site</label>
+  <textarea id="description" placeholder="Ex.: Quero um site para uma loja de roupas. Quero mostrar os produtos, preços, botão do WhatsApp, localização e uma seção sobre a loja."></textarea>
+
+  <button class="generate" onclick="generateSite()">🚀 GERAR SITE COM IA</button>
+  <div id="status">⏳ Preparando seu site...</div>
+
+  <section class="preview" id="preview">
+    <h2>Pré-visualização</h2>
+    <iframe id="frame"></iframe>
+    <div class="actions">
+      <button onclick="downloadSite()">⬇️ Baixar HTML</button>
+      <button onclick="copySite()">📋 Copiar código</button>
+    </div>
+  </section>
+</main>
+
+<footer>© 2026 IA do Paulin — Criação de sites com IA</footer>
+
+<script>
+let generatedHTML = "";
+
+function escapeHTML(s){
+  return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+
+function generateSite(){
+  const business=document.getElementById("business").value.trim() || "Meu Negócio";
+  const type=document.getElementById("type").value;
+  const style=document.getElementById("style").value;
+  const desc=document.getElementById("description").value.trim() || "Um site profissional para apresentar o negócio.";
+
+  const status=document.getElementById("status");
+  status.style.display="block";
+  status.textContent="✨ Criando uma prévia do seu site...";
+
+  generatedHTML=`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${escapeHTML(business)}</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f7fb;color:#101828}
+header{padding:20px 7%;background:#111827;color:#fff;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:24px;font-weight:800}.btn{background:#168cff;color:#fff;padding:12px 18px;border-radius:9px;text-decoration:none}
+.hero{padding:90px 7%;text-align:center;background:linear-gradient(135deg,#eaf4ff,#fff)}
+.hero h1{font-size:clamp(38px,7vw,70px);margin:0 0 15px}.hero p{max-width:700px;margin:auto;font-size:18px;line-height:1.6;color:#475467}
+section{padding:55px 7%}.box{max-width:1000px;margin:auto;background:#fff;padding:30px;border-radius:18px;box-shadow:0 10px 35px #10182812}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.item{padding:22px;border:1px solid #e4e7ec;border-radius:14px}
+footer{padding:30px;text-align:center;background:#111827;color:#fff}
+@media(max-width:700px){.grid{grid-template-columns:1fr}header{gap:15px}}
+</style></head>
+<body>
+<header><div class="logo">${escapeHTML(business)}</div><a class="btn" href="#contato">Falar conosco</a></header>
+<div class="hero"><h1>${escapeHTML(business)}</h1><p>${escapeHTML(desc)}</p><a class="btn" href="#contato">Quero saber mais</a></div>
+<section><div class="box"><h2>Sobre o negócio</h2><p>Conheça ${escapeHTML(business)}, um projeto criado para oferecer uma experiência moderna, profissional e fácil de usar.</p><div class="grid"><div class="item"><h3>Qualidade</h3><p>Atendimento e soluções pensadas para nossos clientes.</p></div><div class="item"><h3>Profissionalismo</h3><p>Uma presença digital moderna e confiável.</p></div><div class="item"><h3>Praticidade</h3><p>Informações claras e contato rápido.</p></div></div></div></section>
+<section id="contato"><div class="box"><h2>Entre em contato</h2><p>Fale conosco pelo WhatsApp e descubra como podemos ajudar.</p><br><a class="btn" href="https://wa.me/" target="_blank">WhatsApp</a></div></section>
+<footer>Site criado com IA do Paulin • ${escapeHTML(type)} • ${escapeHTML(style)}</footer>
+</body></html>`;
+
+  document.getElementById("frame").srcdoc=generatedHTML;
+  document.getElementById("preview").style.display="block";
+  status.textContent="✅ Site criado! Esta é uma prévia local. Para geração real pela OpenAI, conecte o backend da API.";
+}
+
+function downloadSite(){
+  const blob=new Blob([generatedHTML],{type:"text/html"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="site-gerado.html";a.click();
+  URL.revokeObjectURL(a.href);
+}
+async function copySite(){
+  await navigator.clipboard.writeText(generatedHTML);
+  alert("Código copiado!");
+}
+</script>
+</body>
+</html>
