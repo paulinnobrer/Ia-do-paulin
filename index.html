@@ -890,7 +890,7 @@ ${valor("descricao")}
     resultado.textContent = "Gerando…";
 
     try {
-      const resposta = await fetch(API_URL, {
+      const resposta = await fetch("https://paulin-backend.onrender.com/api/gerar-site", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pedido })
@@ -938,9 +938,7 @@ ${valor("descricao")}
     resultado.textContent = "Gerando seu site…";
 
     try {
-      const resposta = await fetch(
-        "https://paulin-backend.onrender.com/api/gerar-site",
-        {
+      const resposta = await fetch("https://paulin-backend.onrender.com/api/gerar-site", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ pedido })
