@@ -20,32 +20,7 @@ app.get("/", (_req, res) => {
 
 app.post("/api/gerar-site", async (req, res) => {
   try {
-    const pedido = String(req.body?.pedido || "").trim();
-
-    if (!pedido) {
-      return res.status(400).json({ erro: "Digite o que deseja criar." });
-    }
-
-    const resposta = await client.responses.create({
-      model: "gpt-5-mini",
-      instructions:
-        "Crie uma página de vendas em HTML completo e responsivo, com CSS embutido. Retorne somente o HTML, sem bloco Markdown ou explicações.",
-      input: pedido
-    });
-
-    res.json({ html: resposta.output_text });
-  } catch (erro) {
-    console.error(erro);
-    res.status(500).json({ erro: "Falha ao gerar o site." });
-  }
-});
-
-const port = process.env.PORT || 3000;
-
-app.listen(port, "0.0.0.0", () => {
-  console.log(`Servidor ativo na porta ${port}`);
-});
-const { empresa, tipo, estilo, descricao, whatsapp, cidade, extras } = req.body;
+    const { empresa, tipo, estilo, descricao, whatsapp, cidade, extras } = req.body;
 
 const ramo = tipo;
 const contato = whatsapp;
@@ -66,3 +41,22 @@ const informacoes = [
   `Outras informações: ${extras || "nenhuma"}`
 ].join("\n");
 
+    const pedido = String(req.body?.pedido || "").trim();
+
+    if (!pedido) {
+      return res.status(400).json({ erro: "Digite o que deseja criar." });
+    }
+
+    const resposta = await client.responses.create({
+      model: "gpt-5-mini",
+      instructions:
+        "Crie uma página de vendas em HTML completo e responsivo, com CSS embutido. Retorne somente o HTML, sem bloco Markdown ou explicações.",
+      input: pedido
+    });
+
+    res.json({ html: resposta.output_text });
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ erro: "Falha ao gerar o site." });
+  }
+});
