@@ -45,3 +45,24 @@ const port = process.env.PORT || 3000;
 app.listen(port, "0.0.0.0", () => {
   console.log(`Servidor ativo na porta ${port}`);
 });
+const { empresa, tipo, estilo, descricao, whatsapp, cidade, extras } = req.body;
+
+const ramo = tipo;
+const contato = whatsapp;
+
+if (!empresa || !ramo || !descricao) {
+  return res.status(400).json({
+    error: "Preencha o nome da empresa, o tipo de negócio e a descrição."
+  });
+}
+
+const informacoes = [
+  `Empresa: ${empresa}`,
+  `Ramo: ${ramo}`,
+  `Estilo: ${estilo || "moderno"}`,
+  `Descrição: ${descricao}`,
+  `WhatsApp: ${contato || "não informado"}`,
+  `Cidade ou endereço: ${cidade || "não informado"}`,
+  `Outras informações: ${extras || "nenhuma"}`
+].join("\n");
+
