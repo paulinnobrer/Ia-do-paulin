@@ -5,7 +5,7 @@ import OpenAI from "openai";
 const app = express();
 
 app.use(cors({
-  origin: "https://paulin-backend.onrender.com"
+  origin: "https://paulinnobrer.github.io",
 }));
 
 app.use(express.json({ limit: "20kb" }));
