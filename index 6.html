@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101322">
+  <meta
+    name="description"
+    content="IA do Paulin cria sites profissionais para empresas a partir das informações do seu negócio."
+  >
+  <title>IA do Paulin — Sites para empresas</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #101322;
+      --surface: #191d30;
+      --surface-light: #222841;
+      --text: #f7f7fb;
+      --muted: #b7bdd0;
+      --primary: #9271ff;
+      --primary-hover: #a58aff;
+      --border: rgba(255, 255, 255, 0.12);
+      --success: #79e0b1;
+      --error: #ff9696;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 15% 0%, rgba(123, 86, 255, 0.22), transparent 40%),
+        var(--background);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 36px));
+      margin-inline: auto;
+    }
+
+    header {
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .brand span {
+      color: var(--primary-hover);
+    }
+
+    .header-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    main {
+      padding: 64px 0 80px;
+    }
+
+    .hero {
+      max-width: 760px;
+      margin: 0 auto 38px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 12px;
+      color: #ded6ff;
+      background: rgba(146, 113, 255, 0.14);
+      border: 1px solid rgba(146, 113, 255, 0.35);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      font-size: clamp(2.35rem, 7vw, 4.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.065em;
+    }
+
+    .hero p {
+      max-width: 620px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.72fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      padding: 26px;
+      background: rgba(25, 29, 48, 0.94);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.2);
+    }
+
+    .card h2 {
+      margin: 0 0 6px;
+      font-size: 1.25rem;
+    }
+
+    .card-intro {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      display: block;
+      width: 100%;
+      padding: 12px 13px;
+      color: var(--text);
+      background: #111528;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(146, 113, 255, 0.17);
+    }
+
+    textarea {
+      min-height: 105px;
+      resize: vertical;
+    }
+
+    .field-hint {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .primary-button,
+    .secondary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 11px 17px;
+      border: 0;
+      border-radius: 11px;
+      cursor: pointer;
+      font-weight: 800;
+      text-decoration: none;
+      transition: background 150ms ease, transform 150ms ease;
+    }
+
+    .primary-button {
+      width: 100%;
+      color: white;
+      background: var(--primary);
+    }
+
+    .primary-button:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .primary-button:disabled {
+      opacity: 0.65;
+      cursor: wait;
+      transform: none;
+    }
+
+    .secondary-button {
+      color: white;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+    }
+
+    .secondary-button:hover {
+      background: #2c3452;
+    }
+
+    .status {
+      display: none;
+      margin-top: 14px;
+      padding: 11px 13px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      overflow-wrap: anywhere;
+    }
+
+    .status.visible {
+      display: block;
+    }
+
+    .status.info {
+      color: #ded6ff;
+      background: rgba(146, 113, 255, 0.12);
+    }
+
+    .status.success {
+      color: var(--success);
+      background: rgba(40, 180, 120, 0.12);
+    }
+
+    .status.error {
+      color: var(--error);
+      background: rgba(255, 80, 80, 0.12);
+    }
+
+    .side-card {
+      position: sticky;
+      top: 20px;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 15px;
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .feature-list li {
+      display: flex;
+      gap: 11px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .feature-icon {
+      display: grid;
+      flex: 0 0 25px;
+      width: 25px;
+      height: 25px;
+      place-items: center;
+      color: #ded6ff;
+      background: rgba(146, 113, 255, 0.16);
+      border-radius: 8px;
+      font-weight: 800;
+    }
+
+    .preview-section {
+      margin-top: 28px;
+    }
+
+    .preview-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .preview-heading h2 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .preview-frame {
+      display: none;
+      width: 100%;
+      height: 720px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .preview-frame.visible {
+      display: block;
+    }
+
+    footer {
+      padding: 20px 0 30px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 760px) {
+      main {
+        padding-top: 45px;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .side-card {
+        position: static;
+      }
+
+      .header-note {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        width: min(100% - 24px, 1080px);
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .two-columns {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .preview-frame {
+        height: 600px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container header-content">
+      <div class="brand">IA do <span>Paulin</span></div>
+      <div class="header-note">Sites profissionais criados com inteligência artificial</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <span class="eyebrow">Criação de sites para empresas</span>
+      <h1>Transforme as informações da empresa em um site.</h1>
+      <p>
+        Preencha os dados do negócio, gere uma primeira versão e apresente
+        o resultado ao cliente.
+      </p>
+    </section>
+
+    <div class="workspace">
+      <section class="card">
+        <h2>Informações da empresa</h2>
+        <p class="card-intro">Quanto mais detalhes você informar, mais personalizado será o site.</p>
+
+        <form id="pedido">
+          <div class="field">
+            <label for="empresa">Nome da empresa *</label>
+            <input id="empresa" name="empresa" type="text" maxlength="80" required
+              placeholder="Ex.: Boutique da Ana">
+          </div>
+
+          <div class="two-columns">
+            <div class="field">
+              <label for="tipo">Tipo de negócio *</label>
+              <input id="tipo" name="tipo" type="text" maxlength="80" required
+                placeholder="Ex.: loja de roupas">
+            </div>
+
+            <div class="field">
+              <label for="estilo">Estilo visual</label>
+              <select id="estilo" name="estilo">
+                <option value="moderno">Moderno</option>
+                <option value="elegante">Elegante</option>
+                <option value="minimalista">Minimalista</option>
+                <option value="colorido">Colorido</option>
+                <option value="sofisticado">Sofisticado</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="descricao">O que a empresa oferece? *</label>
+            <textarea id="descricao" name="descricao" maxlength="4000" required
+              placeholder="Descreva os produtos ou serviços, diferenciais e público atendido."></textarea>
+            <span class="field-hint">Até 4.000 caracteres.</span>
+          </div>
+
+          <div class="two-columns">
+            <div class="field">
+              <label for="whatsapp">WhatsApp para contato</label>
+              <input id="whatsapp" name="whatsapp" type="tel" maxlength="30"
+                placeholder="Ex.: (11) 99999-9999">
+            </div>
+
+            <div class="field">
+              <label for="cidade">Cidade ou endereço</label>
+              <input id="cidade" name="cidade" type="text" maxlength="120"
+                placeholder="Ex.: Campinas, SP">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="extras">Outras informações</label>
+            <textarea id="extras" name="extras" maxlength="2000"
+              placeholder="Horários, redes sociais, produtos com preços ou outras informações úteis."></textarea>
+          </div>
+
+          <button class="primary-button" id="gerarSite" type="submit">
+            Gerar site da empresa
+          </button>
+
+          <div class="status" id="resultado" role="status" aria-live="polite"></div>
+        </form>
+      </section>
+
+      <aside class="card side-card">
+        <h2>Um site feito para cada negócio</h2>
+        <p class="card-intro">
+          Use o formulário para criar uma prévia personalizada e conversar
+          com o cliente sobre a entrega final.
+        </p>
+
+        <ul class="feature-list">
+          <li><span class="feature-icon">1</span><span>Informe os dados e os diferenciais da empresa.</span></li>
+          <li><span class="feature-icon">2</span><span>Gere uma página completa em português.</span></li>
+          <li><span class="feature-icon">3</span><span>Revise a prévia antes de publicar ou vender o projeto.</span></li>
+        </ul>
+      </aside>
+    </div>
+
+    <section class="preview-section" id="secaoPreview" hidden>
+      <div class="preview-heading">
+        <h2>Prévia do site gerado</h2>
+        <a class="secondary-button" id="abrirNovaAba" href="#" target="_blank" rel="noopener">
+          Abrir em nova aba
+        </a>
+      </div>
+      <iframe
+        class="preview-frame"
+        id="preview"
+        title="Prévia do site gerado"
+        sandbox="allow-scripts allow-forms allow-popups"
+      ></iframe>
+    </section>
+  </main>
+
+  <footer>
+    IA do Paulin — crie experiências digitais para empresas.
+  </footer>
+
+  <script>
+    const API_URL = "https://paulin-backend.onrender.com/api/gerar-site";
+
+    const form = document.getElementById("pedido");
+    const button = document.getElementById("gerarSite");
+    const statusBox = document.getElementById("resultado");
+    const preview = document.getElementById("preview");
+    const previewSection = document.getElementById("secaoPreview");
+    const openPreview = document.getElementById("abrirNovaAba");
+
+    function showStatus(message, type) {
+      statusBox.textContent = message;
+      statusBox.className = `status visible ${type}`;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!form.reportValidity()) return;
+
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      button.disabled = true;
+      button.textContent = "Gerando o site...";
+      showStatus("A IA está criando o site. Isso pode levar alguns instantes.", "info");
+      previewSection.hidden = true;
+      preview.classList.remove("visible");
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(result.error || result.message || `Erro do servidor (${response.status}).`);
+        }
+
+        const html = result.html || result.site || result.output;
+
+        if (typeof html !== "string" || !html.trim()) {
+          throw new Error("O servidor respondeu, mas não retornou o HTML do site.");
+        }
+
+        const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+        const previewUrl = URL.createObjectURL(blob);
+
+        preview.src = previewUrl;
+        openPreview.href = previewUrl;
+        previewSection.hidden = false;
+        preview.classList.add("visible");
+
+        showStatus("Site gerado. Revise a prévia antes de entregar ao cliente.", "success");
+        previewSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        console.error(error);
+        showStatus(
+          `Não foi possível gerar o site: ${error.message}. Confira se o backend está ativo e se aceita solicitações deste domínio.`,
+          "error"
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = "Gerar site da empresa";
+      }
+    });
+  </script>
+</body>
+</html>
