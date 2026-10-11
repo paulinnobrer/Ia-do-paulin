@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IA do Paulin — Gerador de Sites</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:#070b18;
+      color:#fff;
+    }
+    .container{
+      width:min(1000px,92%);
+      margin:0 auto;
+    }
+    header{
+      padding:30px 0 15px;
+      text-align:center;
+    }
+    header h1{
+      margin:0;
+      font-size:32px;
+    }
+    header h1 span{color:#3d7cff}
+    header p{
+      color:#aeb8d0;
+      margin:10px 0 0;
+    }
+    .card{
+      background:#111827;
+      border:1px solid #2d3c5c;
+      border-radius:24px;
+      padding:24px;
+      margin:20px 0;
+      box-shadow:0 15px 50px rgba(0,0,0,.25);
+    }
+    label{
+      display:block;
+      font-size:18px;
+      font-weight:700;
+      margin:20px 0 9px;
+    }
+    input,textarea,select{
+      width:100%;
+      border:1px solid #344667;
+      background:#080d1c;
+      color:#fff;
+      border-radius:16px;
+      padding:16px;
+      font-size:17px;
+      outline:none;
+    }
+    textarea{
+      min-height:130px;
+      resize:vertical;
+    }
+    input:focus,textarea:focus,select:focus{
+      border-color:#3d7cff;
+    }
+    .hint{
+      color:#9da8c2;
+      font-size:14px;
+      line-height:1.5;
+      margin-top:8px;
+    }
+    button{
+      border:0;
+      border-radius:16px;
+      padding:16px 20px;
+      font-size:17px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    #gerar{
+      width:100%;
+      margin-top:24px;
+      background:#3978ff;
+      color:#fff;
+      font-size:20px;
+    }
+    #gerar:disabled{
+      opacity:.65;
+      cursor:wait;
+    }
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:15px;
+    }
+    .secondary{
+      background:#202b42;
+      color:#fff;
+    }
+    .status{
+      display:none;
+      margin-top:18px;
+      padding:16px;
+      border-radius:14px;
+      line-height:1.5;
+      font-weight:600;
+    }
+    .status.ok{
+      display:block;
+      background:#12351f;
+      border:1px solid #277846;
+      color:#b9f6ca;
+    }
+    .status.error{
+      display:block;
+      background:#3b1717;
+      border:1px solid #8d2e2e;
+      color:#ffd0d0;
+    }
+    .preview{
+      width:100%;
+      height:650px;
+      border:1px solid #344667;
+      border-radius:18px;
+      background:#fff;
+    }
+    .file-list{
+      margin-top:10px;
+      color:#b9c4db;
+      font-size:14px;
+    }
+    footer{
+      text-align:center;
+      color:#8995b0;
+      padding:30px 0 50px;
+    }
+    @media(max-width:600px){
+      .card{padding:18px;border-radius:20px}
+      header h1{font-size:27px}
+      .preview{height:560px}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>✨ <span>IA do Paulin</span></h1>
+      <p>Crie sites profissionais com inteligência artificial.</p>
+    </header>
+
+    <section class="card">
+      <label for="nome">Nome do negócio</label>
+      <input id="nome" type="text" placeholder="Ex.: CL Boutique">
+
+      <label for="tipo">Tipo de site</label>
+      <input id="tipo" type="text" placeholder="Ex.: Loja de roupas, restaurante, barbearia...">
+
+      <label for="descricao">Descreva o site que deseja</label>
+      <textarea id="descricao" placeholder="Ex.: Site moderno com preços e contatos e botão do WhatsApp pro número 85921549449"></textarea>
+
+      <label for="cores">Cores desejadas</label>
+      <input id="cores" type="text" placeholder="Ex.: azul escuro, branco e dourado">
+
+      <label for="whatsapp">WhatsApp para contato (opcional)</label>
+      <input id="whatsapp" type="tel" placeholder="Ex.: 85921549449">
+
+      <label for="fotos">Fotos do cliente (opcional)</label>
+      <input id="fotos" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+      <div class="hint">Use imagens JPG, PNG ou WebP. Máximo de 5 imagens, até 5 MB cada.</div>
+      <div id="fileList" class="file-list"></div>
+
+      <button id="gerar" type="button">✨ Gerar site com IA</button>
+
+      <div id="status" class="status"></div>
+    </section>
+
+    <section class="card">
+      <h2>Pré-visualização</h2>
+      <iframe id="preview" class="preview" title="Pré-visualização do site gerado"></iframe>
+
+      <div class="actions">
+        <button id="baixar" class="secondary" type="button">⬇️ Baixar HTML</button>
+        <button id="copiar" class="secondary" type="button">📋 Copiar código</button>
+      </div>
+    </section>
+
+    <footer>
+      IA do Paulin · Sites profissionais com inteligência artificial
+    </footer>
+  </div>
+
+<script>
+  // ENDEREÇO COMPLETO DO SEU CLOUDFLARE WORKER
+  const WORKER_URL =
+    "https://ia-do-paulin-api.cgs9ctb8ps.workers.dev";
+
+  // ROTA QUE O BOTÃO "GERAR SITE COM IA" VAI USAR
+  const API_URL =
+    WORKER_URL + "/api/gerar";
+
+  let htmlGerado = "";
+
+  const nome = document.getElementById("nome");
+  const tipo = document.getElementById("tipo");
+  const descricao = document.getElementById("descricao");
+  const cores = document.getElementById("cores");
+  const whatsapp = document.getElementById("whatsapp");
+  const fotos = document.getElementById("fotos");
+  const gerar = document.getElementById("gerar");
+  const statusBox = document.getElementById("status");
+  const preview = document.getElementById("preview");
+  const fileList = document.getElementById("fileList");
+  const baixar = document.getElementById("baixar");
+  const copiar = document.getElementById("copiar");
+
+  fotos.addEventListener("change", () => {
+    const arquivos = Array.from(fotos.files || []);
+
+    if (!arquivos.length) {
+      fileList.textContent = "";
+      return;
+    }
+
+    fileList.textContent =
+      arquivos.length + " arquivo(s) selecionado(s): " +
+      arquivos.map(a => a.name).join(", ");
+  });
+
+  function mostrarStatus(mensagem, tipo) {
+    statusBox.textContent = mensagem;
+    statusBox.className = "status " + tipo;
+  }
+
+  gerar.addEventListener("click", async () => {
+    const nomeValue = nome.value.trim();
+    const tipoValue = tipo.value.trim();
+    const descricaoValue = descricao.value.trim();
+    const coresValue = cores.value.trim();
+    const whatsappValue = whatsapp.value.trim();
+
+    if (!nomeValue || !tipoValue || !descricaoValue) {
+      mostrarStatus(
+        "❌ Preencha o nome do negócio, o tipo de site e a descrição.",
+        "error"
+      );
+      return;
+    }
+
+    const arquivos = Array.from(fotos.files || []);
+
+    if (arquivos.length > 5) {
+      mostrarStatus("❌ Escolha no máximo 5 imagens.", "error");
+      return;
+    }
+
+    for (const arquivo of arquivos) {
+      if (arquivo.size > 5 * 1024 * 1024) {
+        mostrarStatus(
+          "❌ A imagem " + arquivo.name + " ultrapassa 5 MB.",
+          "error"
+        );
+        return;
+      }
+    }
+
+    gerar.disabled = true;
+    gerar.textContent = "⏳ Gerando site...";
+    statusBox.className = "status";
+    statusBox.textContent = "";
+
+    try {
+      const form = new FormData();
+
+      form.append("nome", nomeValue);
+      form.append("tipo", tipoValue);
+      form.append("descricao", descricaoValue);
+      form.append("cores", coresValue || "Escolha cores profissionais");
+      form.append("whatsapp", whatsappValue);
+
+      // Envia as fotos ao Worker.
+      // O Worker atual pode não usar as imagens ainda,
+      // mas elas seguem corretamente na requisição.
+      for (const arquivo of arquivos) {
+        form.append("fotos", arquivo);
+      }
+
+      const resposta = await fetch(API_URL, {
+        method: "POST",
+        body: form
+      });
+
+      let dados;
+
+      try {
+        dados = await resposta.json();
+      } catch {
+        throw new Error(
+          "O Worker respondeu em um formato inesperado."
+        );
+      }
+
+      if (!resposta.ok) {
+        throw new Error(
+          dados.error ||
+          ("Erro HTTP " + resposta.status)
+        );
+      }
+
+      if (!dados.html) {
+        throw new Error(
+          "A IA não retornou o HTML do site."
+        );
+      }
+
+      htmlGerado = dados.html;
+
+      preview.srcdoc = htmlGerado;
+
+      mostrarStatus(
+        "✅ Site gerado com sucesso! Veja a pré-visualização abaixo.",
+        "ok"
+      );
+
+    } catch (erro) {
+      console.error(erro);
+
+      mostrarStatus(
+        "❌ " + (erro.message || "Não foi possível gerar o site.") +
+        " Confira se o Worker está publicado e se a GEMINI_API_KEY está configurada.",
+        "error"
+      );
+
+    } finally {
+      gerar.disabled = false;
+      gerar.textContent = "✨ Gerar site com IA";
+    }
+  });
+
+  baixar.addEventListener("click", () => {
+    if (!htmlGerado) {
+      mostrarStatus(
+        "⚠️ Primeiro gere um site com a IA.",
+        "error"
+      );
+      return;
+    }
+
+    const blob = new Blob(
+      [htmlGerado],
+      { type: "text/html;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = "site-gerado-index.html";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
+  });
+
+  copiar.addEventListener("click", async () => {
+    if (!htmlGerado) {
+      mostrarStatus(
+        "⚠️ Primeiro gere um site com a IA.",
+        "error"
+      );
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(htmlGerado);
+
+      mostrarStatus(
+        "✅ Código HTML copiado.",
+        "ok"
+      );
+
+    } catch {
+      mostrarStatus(
+        "❌ Não foi possível copiar automaticamente.",
+        "error"
+      );
+    }
+  });
+
+  // Teste simples do Worker ao carregar a página.
+  // Não bloqueia o site caso o teste falhe.
+  fetch(WORKER_URL, {
+    method: "GET"
+  })
+  .then(async resposta => {
+    if (!resposta.ok) return;
+    const dados = await resposta.json();
+    console.log("IA do Paulin Worker:", dados);
+  })
+  .catch(erro => {
+    console.warn("Worker ainda não respondeu:", erro);
+  });
+</script>
+
+</body>
+</html>
